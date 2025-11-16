@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>House Management System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        nav {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        nav h1 {
+            color: #667eea;
+            text-align: center;
+            font-size: 2em;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: #f8f9fa;
+        }
+
+        th, td {
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid #dee2e6;
+        }
+
+        th {
+            color: #495057;
+            font-weight: 600;
+        }
+
+        .value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        button {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #5568d3;
+        }
+
+        .status {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status.normal {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .status.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .status.alert {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <h1>🏠 House Management System</h1>
+    </nav>
+    
+    <div class="container">
+        <!-- Temperature Card -->
+        <div class="card">
+            <h2>🌡️ Temperature</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Current Temp</th>
+                        <th>Set Temp</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="value" id="currentTemp">--</div>
+                            <span>°C</span>
+                        </td>
+                        <td>
+                            <div class="value" id="setTemp">25</div>
+                            <span>°C</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="input-group">
+                <input type="number" id="tempInput" placeholder="Set temperature" value="25" min="15" max="35">
+                <button onclick="setTemperature()">Set</button>
+            </div>
+            <div style="margin-top: 15px;">
+                Status: <span class="status normal" id="tempStatus">Normal</span>
+            </div>
+        </div>
+
+        <!-- Humidity Card -->
+        <div class="card">
+            <h2>💧 Humidity</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Current Humidity</th>
+                        <th>Set Humidity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <div class="value" id="currentHumidity">--</div>
+                            <span>%</span>
+                        </td>
+                        <td>
+                            <div class="value" id="setHumidity">50</div>
+                            <span>%</span>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="input-group">
+                <input type="number" id="humidityInput" placeholder="Set humidity" value="50" min="30" max="80">
+                <button onclick="setHumidity()">Set</button>
+            </div>
+            <div style="margin-top: 15px;">
+                Status: <span class="status normal" id="humidityStatus">Normal</span>
+            </div>
+        </div>
+
+        <!-- Fan Control Card -->
+        <div class="card">
+            <h2>🌀 Fan Control</h2>
+            <div style="text-align: center; padding: 20px;">
+                <div class="value" id="fanStatus">OFF</div>
+                <div style="margin-top: 20px;">
+                    <button onclick="toggleFan()" style="padding: 15px 40px; font-size: 1.1em;">Toggle Fan</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setTemperature() {
+            const temp = document.getElementById('tempInput').value;
+            document.getElementById('setTemp').textContent = temp;
+        }
+
+        function setHumidity() {
+            const humidity = document.getElementById('humidityInput').value;
+            document.getElementById('setHumidity').textContent = humidity;
+            console.log('Setting humidity to:', humidity);
+        }
+
+        function toggleFan() {
+            const fanStatus = document.getElementById('fanStatus');
+            if (fanStatus.textContent === 'OFF') {
+                fanStatus.textContent = 'ON';
+                fanStatus.style.color = '#28a745';
+            } else {
+                fanStatus.textContent = 'OFF';
+                fanStatus.style.color = '#dc3545';
+            }
+        }
+
+        // Simulate receiving sensor data
+        function updateSensorData(temp, humidity) {
+            document.getElementById('currentTemp').textContent = temp;
+            document.getElementById('currentHumidity').textContent = humidity;
+            
+            // Update status
+            const setTemp = parseFloat(document.getElementById('setTemp').textContent);
+            const tempDiff = Math.abs(temp - setTemp);
+            const tempStatus = document.getElementById('tempStatus');
+            
+            if (tempDiff < 2) {
+                tempStatus.textContent = 'Normal';
+                tempStatus.className = 'status normal';
+            } else if (tempDiff < 5) {
+                tempStatus.textContent = 'Warning';
+                tempStatus.className = 'status warning';
+            } else {
+                tempStatus.textContent = 'Alert';
+                tempStatus.className = 'status alert';
+            }
+        }
+
+        // Simulate data updates every 2 seconds
+        setInterval(() => {
+            const temp = (20 + Math.random() * 10).toFixed(1);
+            const humidity = (40 + Math.random() * 20).toFixed(1);
+            updateSensorData(temp, humidity);
+        }, 2000);
+    </script>
+</body>
+</html>
