@@ -32,5 +32,21 @@ void loop() {
         digitalWrite(heater, 1);
       }
     }
+    if(command=="Fan"){
+      if(state=="off"){
+        digitalWrite(fan, 0);
+      }
+      if(state=="on"){
+        digitalWrite(fan, 1);
+      }
+    }
+    if(command == "Heat"){
+      if(state=="off"){
+        digitalWrite(heater, 0);
+      }
+      if(state=="on"){
+        digitalWrite(heater, 1);
+      }
+    }
   }
 }

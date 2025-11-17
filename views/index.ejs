@@ -182,45 +182,22 @@
             </div>
         </div>
 
-        <!-- Humidity Card -->
-        <div class="card">
-            <h2>💧 Humidity</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Current Humidity</th>
-                        <th>Set Humidity</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>
-                            <div class="value" id="currentHumidity">--</div>
-                            <span>%</span>
-                        </td>
-                        <td>
-                            <div class="value" id="setHumidity">50</div>
-                            <span>%</span>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-            <div class="input-group">
-                <input type="number" id="humidityInput" placeholder="Set humidity" value="50" min="30" max="80">
-                <button onclick="setHumidity()">Set</button>
-            </div>
-            <div style="margin-top: 15px;">
-                Status: <span class="status normal" id="humidityStatus">Normal</span>
-            </div>
-        </div>
-
-        <!-- Fan Control Card -->
-        <div class="card">
+        
+         <div class="card">
             <h2>🌀 Fan Control</h2>
             <div style="text-align: center; padding: 20px;">
-                <div class="value" id="fanStatus">OFF</div>
+                <div class="value" id="fanStatus">AUTO</div>
                 <div style="margin-top: 20px;">
                     <button onclick="toggleFan()" style="padding: 15px 40px; font-size: 1.1em;">Toggle Fan</button>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <h2>🔥Heater Control</h2>
+            <div style="text-align: center; padding: 20px;">
+                <div class="value" id="heatStatus">AUTO</div>
+                <div style="margin-top: 20px;">
+                    <button onclick="toggleHeater()" style="padding: 15px 40px; font-size: 1.1em;">Toggle Heater</button>
                 </div>
             </div>
         </div>
@@ -230,31 +207,49 @@
         function setTemperature() {
             const temp = document.getElementById('tempInput').value;
             document.getElementById('setTemp').textContent = temp;
+            document.getElementById('heatStatus').textContent='AUTO';
+            document.getElementById('fanStatus').textContent='AUTO';
         }
 
-        function setHumidity() {
-            const humidity = document.getElementById('humidityInput').value;
-            document.getElementById('setHumidity').textContent = humidity;
-            console.log('Setting humidity to:', humidity);
-        }
+        function toggleHeater() {
+            const heatStatus = document.getElementById('heatStatus');
+            let state;
+            if(heatStatus.textContent==='AUTO'){
+                heatStatus.textContent = 'ON';
+                heatStatus.style.color = '#28a745';
+                state = 'on'
+            }
+            else if (heatStatus.textContent === 'OFF') {
+                heatStatus.textContent = 'ON';
+                heatStatus.style.color = '#28a745';
+                state = 'on'
+            } else {
+                heatStatus.textContent = 'OFF';
+                heatStatus.style.color = '#dc3545';
+                state = 'off'
+            }
 
+            fetch(`/heat/${state}`)
+        }
         function toggleFan() {
             const fanStatus = document.getElementById('fanStatus');
+            let state;
             if (fanStatus.textContent === 'OFF') {
                 fanStatus.textContent = 'ON';
                 fanStatus.style.color = '#28a745';
+                state = 'on'
             } else {
                 fanStatus.textContent = 'OFF';
                 fanStatus.style.color = '#dc3545';
+                state = 'off'
             }
+
+            fetch(`/fan/${state}`)
         }
 
-        // Simulate receiving sensor data
-        function updateSensorData(temp, humidity) {
+        function updateSensorData(temp) {
             document.getElementById('currentTemp').textContent = temp;
-            document.getElementById('currentHumidity').textContent = humidity;
             
-            // Update status
             const setTemp = parseFloat(document.getElementById('setTemp').textContent);
             const tempDiff = Math.abs(temp - setTemp);
             const tempStatus = document.getElementById('tempStatus');
@@ -271,11 +266,11 @@
             }
         }
 
-        // Simulate data updates every 2 seconds
+
         setInterval(() => {
             const temp = (20 + Math.random() * 10).toFixed(1);
-            const humidity = (40 + Math.random() * 20).toFixed(1);
-            updateSensorData(temp, humidity);
+            fetch(`/Temperature/${temp}`)
+            updateSensorData(temp);
         }, 2000);
     </script>
 </body>

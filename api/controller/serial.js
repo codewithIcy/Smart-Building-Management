@@ -1,8 +1,8 @@
-import serialPort from 'serialport'
+import { SerialPort } from 'serialport';
 import { ReadlineParser } from 'serialport';
 
 
-const port = new serialPort({
+const port = new SerialPort({
   path: 'COM11',
   baudRate: 115200
 });
@@ -19,17 +19,10 @@ parser.on('data', (data) => {
 port.on('open', () => {
   console.log('Serial port opened');
   
-
-  port.write('Temperature:25.5\n', (err) => {
-    if (err) {
-      return console.log('Error writing:', err.message);
-    }
-    console.log('Message sent');
-  });
 });
 
 port.on('error', (err) => {
   console.log('Error:', err.message);
 });
 
-export default port
+export default port;
