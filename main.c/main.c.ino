@@ -1,5 +1,6 @@
 const int fan = 2;
 const int heater = 3;
+bool status = true;
 
 float temperature;
 
@@ -7,45 +8,84 @@ void setup() {
   Serial.begin(115200);
   pinMode(fan, OUTPUT);
   pinMode(heater, OUTPUT);
+
+  digitalWrite(fan, LOW);
+  digitalWrite(heater, LOW);
+  
+  Serial.println("System Ready - Auto Mode");
 }
 
 void loop() {
- if(Serial.available()){
-  String command = Serial.readStringUntil(':');
-  Serial.println("Command: " + command);
-  String state = Serial.readStringUntil('\n');
-  Serial.println("State: " + state);
+  if(Serial.available() > 0) {
+    String command = Serial.readStringUntil(':');
+    String state = Serial.readStringUntil('\n');
+    
 
-  if(command=="Temperature"){
-    temperature = state.toFloat();
-    Serial.println(temperature);
-      if(temperature>24){
-        digitalWrite(fan, 1);
-        digitalWrite(heater, 0);
+    command.trim();
+    state.trim();
+    
+    Serial.println("Command: " + command);
+    Serial.println("State: " + state);
+    Serial.print("Mode: ");
+    Serial.println(status ? "Auto" : "Manual");
+    
+
+    if((command == "Temperature") && (status == true)) {
+      temperature = state.toFloat();
+      Serial.print("Temp: ");
+      Serial.println(temperature);
+      
+      if(temperature > 24) {
+        digitalWrite(fan, HIGH);
+        digitalWrite(heater, LOW);
+        Serial.println("Fan ON, Heater OFF");
       }
-      else if(state == "off"){
-        digitalWrite(fan, 0);
-        digitalWrite(heater, 0);
+      else if(temperature < 20) { 
+        digitalWrite(fan, LOW);
+        digitalWrite(heater, HIGH);
+        Serial.println("Fan OFF, Heater ON");
       }
-      else{
-        digitalWrite(fan, 0);
-        digitalWrite(heater, 1);
+      else {
+        digitalWrite(fan, LOW);
+        digitalWrite(heater, LOW);
+        Serial.println("Both OFF");
       }
     }
-    if(command=="Fan"){
-      if(state=="off"){
-        digitalWrite(fan, 0);
+    
+
+    if(command == "Fan") {
+      status = false;
+      if(state == "off") {
+        digitalWrite(fan, LOW);
+        Serial.println("Fan manually turned OFF");
       }
-      if(state=="on"){
-        digitalWrite(fan, 1);
+      else if(state == "on") { 
+        digitalWrite(fan, HIGH);
+        Serial.println("Fan manually turned ON");
       }
     }
-    if(command == "Heat"){
-      if(state=="off"){
-        digitalWrite(heater, 0);
+
+    if(command == "Heater") {
+      status = false;
+      if(state == "off") {
+        digitalWrite(heater, LOW);
+        Serial.println("Heater manually turned OFF");
       }
-      if(state=="on"){
-        digitalWrite(heater, 1);
+      else if(state == "on") {
+        digitalWrite(heater, HIGH);
+        Serial.println("Heater manually turned ON");
+      }
+    }
+    
+
+    if(command == "Mode") {
+      if(state == "Auto" || state == "auto") {
+        status = true;
+        Serial.println("Switched to Auto Mode");
+      }
+      else if(state == "Manual" || state == "manual") {
+        status = false;
+        Serial.println("Switched to Manual Mode");
       }
     }
   }

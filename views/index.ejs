@@ -208,7 +208,10 @@
             const temp = document.getElementById('tempInput').value;
             document.getElementById('setTemp').textContent = temp;
             document.getElementById('heatStatus').textContent='AUTO';
+            document.getElementById('heatStatus').style.color='#667eea';
             document.getElementById('fanStatus').textContent='AUTO';
+            document.getElementById('fanStatus').style.color='#667eea';
+            fetch('mode/Auto')
         }
 
         function toggleHeater() {
@@ -234,7 +237,12 @@
         function toggleFan() {
             const fanStatus = document.getElementById('fanStatus');
             let state;
-            if (fanStatus.textContent === 'OFF') {
+            if(fanStatus.textContent==='AUTO'){
+                fanStatus.textContent = 'ON';
+                fanStatus.style.color = '#28a745';
+                state = 'on'
+            }
+            else if (fanStatus.textContent === 'OFF') {
                 fanStatus.textContent = 'ON';
                 fanStatus.style.color = '#28a745';
                 state = 'on'
