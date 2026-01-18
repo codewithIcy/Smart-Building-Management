@@ -24,13 +24,12 @@ void loop() {
     command.trim();
     state.trim();
     
-    Serial.println("Command: " + command);
-    Serial.println("State: " + state);
-    Serial.print("Mode: ");
-    Serial.println(status ? "Auto" : "Manual");
-    
 
     if((command == "Temperature") && (status == true)) {
+      Serial.println("Command: " + command);
+      Serial.println("State: " + state);
+      Serial.print("Mode: ");
+      Serial.println(status ? "Auto" : "Manual");
       temperature = state.toFloat();
       Serial.print("Temp: ");
       Serial.println(temperature);
@@ -40,7 +39,7 @@ void loop() {
         digitalWrite(heater, LOW);
         Serial.println("Fan ON, Heater OFF");
       }
-      else if(temperature < 20) { 
+      else if(temperature < 24) { 
         digitalWrite(fan, LOW);
         digitalWrite(heater, HIGH);
         Serial.println("Fan OFF, Heater ON");
@@ -87,6 +86,10 @@ void loop() {
         status = false;
         Serial.println("Switched to Manual Mode");
       }
+    }
+
+    if(command=="Ping"){
+      Serial.println("Ping:"+state);
     }
   }
 }

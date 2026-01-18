@@ -5,7 +5,7 @@ const router = express.Router()
 
 router.get('/fan/:state', async(req, res)=>{
     const state = req.params.state
-    port.write(`Mode:Manual\nFan:${state}`, (err) => {
+    port.write(`Mode:Manual\nFan:${state}\n`, (err) => {
     if (err) {
         return console.log('Error writing:', err.message);
     }
@@ -35,8 +35,6 @@ router.get('/Temperature/:state', async(req, res)=>{
     if (err) {
         return console.log('Error writing:', err.message);
     }
-        console.log('Message sent');
-        console.log(state)
     });
 
     res.json()
@@ -44,7 +42,7 @@ router.get('/Temperature/:state', async(req, res)=>{
 
 router.get('/mode/:state', async(req, res)=>{
     const state = req.params.state
-    port.write(`Mode:${state}\n`, (err) => {
+    port.write(`Mode:${state}\nPing:${Date.now()}\n`, (err) => {
     if (err) {
         return console.log('Error writing:', err.message);
     }
